@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes App</title>
+</head>
+<body>
+
+<h2>Register</h2>
+<input id="regEmail" placeholder="Email">
+<input id="regPass" placeholder="Password">
+<button onclick="register()">Register</button>
+
+<h2>Login</h2>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPass" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<h2>Add Note</h2>
+<input id="noteText" placeholder="Note">
+<button onclick="addNote()">Add</button>
+
+<ul id="notesList"></ul>
+
+<script>
+const API = "http://localhost:3001"
+
+let userId = ""
+
+// REGISTER
+function register() {
+    fetch(API + "/register", {
+        method: "POST",
+        body: JSON.stringify({
+            email: regEmail.value,
+            password: regPass.value
+        })
+    })
+}
+
+// LOGIN
+function login() {
+    fetch(API + "/login", {
+        method: "POST",
+        body: JSON.stringify({
+            email: loginEmail.value,
+            password: loginPass.value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        userId = data._id
+        getNotes()
+    })
+}
+
+// ADD NOTE
+function addNote() {
+    fetch(API + "/notes", {
+        method: "POST",
+        body: JSON.stringify({
+            userId,
+            text: noteText.value
+        })
+    })
+    .then(() => getNotes)
+}
+
+// GET NOTES
+function getNotes() {
+    fetch(API + "/notes/" + userId)
+    .then(res => res.json())
+    .then(data => {
+        notesList.innerHTML = ""
+        data.forEach(n => {
+            notesList.innerHTML += `<li>${n.text}</li>`
+        })
+    })
+}
+
+// BUG: Nothing auto loads
+</script>
+
+</body>
+</html>
