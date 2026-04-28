@@ -60,4 +60,6 @@ app.get('/notes/:userId', async (req, res) => {
 })
 
 // BUG: No server log
-app.listen(3001)
+app.listen(3001,() => {
+    console.log("Server started on port 3001")
+});
